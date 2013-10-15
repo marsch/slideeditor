@@ -2,12 +2,15 @@ define [
   'cs!editor/elements/textelement'
   'cs!editor/elements/imageelement'
   'underscore'
-], (TextElement, ImageElement, _) ->
+  'keymaster'
+], (TextElement, ImageElement, _, key) ->
   'use strict'
 
   class Editor
+    elements: []
     areaSelector: '#slidePane'
     constructor:() ->
+      key 'backspace', @onDeleteElement
 
       $(document).on 'paste', @onPaste
 
@@ -20,9 +23,15 @@ define [
 
       $('#addImg').click @addImageElement
 
-    addTextElement: (options) ->
+      $(@areaSelector).click (evt) =>
+        _(@elements).each (element) ->
+          return if element.selected == false
+          element.onDeselect()
+
+    addTextElement: (options) =>
       console.log 'add textnode'
       n = new TextElement()
+      @elements.push n
       n.create(options)
       $(n).on 'select', (evt, element) =>
         @ctxMenu = element.getCtxMenu()
@@ -32,9 +41,10 @@ define [
         $('#contextMenu').empty()
       $('#slidePane').append(n.el)
 
-    addImageElement: (options = {}) ->
+    addImageElement: (options = {}) =>
       console.log 'add imagenode'
       n = new ImageElement()
+      @elements.push n
       n.create(options)
       $(n).on 'select', (evt, element) =>
         @ctxMenu = element.getCtxMenu()
@@ -62,12 +72,14 @@ define [
       console.log 'found texts', textElements
       console.log 'found images', imageElements
 
-      _(textElements).each (elem) ->
+      _(textElements).each (elem) =>
         n = new TextElement()
+        @elements.push n
         n.import $(elem)
 
-      _(imageElements).each (elem) ->
+      _(imageElements).each (elem) =>
         n = new ImageElement()
+        @elements.push n
         n.import $(elem)
 
     onPaste: (evt) =>
@@ -123,3 +135,11 @@ define [
 
           @addTextElement opts
           console.log 'handling text', cpData.getData(type)
+
+    onDeleteElement: () =>
+      _(@elements).each (element, i) =>
+        if element.selected
+          element.dispose()
+
+      @elements = _(@elements).filter (element) ->
+        return element.disposed == false

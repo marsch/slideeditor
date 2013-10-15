@@ -5,6 +5,7 @@ define [], () ->
   class SlideElement
     el: null
     selected: false
+    disposed: false
     initEvents: () ->
       console.log 'init draggable'
       @el.click (evt) =>
@@ -12,12 +13,6 @@ define [], () ->
         @onSelect()
 
       @el.dblclick @onEdit
-
-      $('#slidePane').click (evt) =>
-        console.log 'evt', evt
-        if @selected == false
-          return
-        @onDeselect()
 
     onSelect: () =>
       @el.addClass 'selected'
@@ -40,6 +35,14 @@ define [], () ->
       console.log 'ctxmenu', @ctxMenu
       $('#contextMenu').empty().append(@ctxMenu)
       $(@).trigger 'edit'
+
+    dispose: () =>
+      console.log 'disposing', @
+      return if @disposed
+      @el.off()
+      console.log 'removing'
+      @el.remove()
+      @disposed = true
 
 
 
