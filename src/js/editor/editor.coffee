@@ -8,6 +8,9 @@ define [
   class Editor
     areaSelector: '#slidePane'
     constructor:() ->
+
+      $(document).on 'paste', @onPaste
+
       $('#addNormal').click @addTextElement('normal')
       $('#addHeading1').click @addTextElement('headline1')
       $('#addHeading2').click @addTextElement('headline2')
@@ -27,10 +30,10 @@ define [
           $('#contextMenu').empty()
         $('#slidePane').append(n.el)
 
-    addImageElement: () ->
+    addImageElement: (options = {}) ->
       console.log 'add imagenode'
       n = new ImageElement()
-      n.create()
+      n.create(options)
       $(n).on 'select', (evt, element) =>
         @ctxMenu = element.getCtxMenu()
         $('#contextMenu').empty().append(@ctxMenu)
@@ -38,6 +41,8 @@ define [
       $(n).on 'deselect', (evt, element) ->
         $('#contextMenu').empty()
       $('#slidePane').append(n.el)
+
+
 
     addShapeElement: () ->
 
@@ -62,3 +67,26 @@ define [
       _(imageElements).each (elem) ->
         n = new ImageElement()
         n.import $(elem)
+
+    onPaste: (evt) =>
+      imageMatch = /image.*/
+
+      console.log 'paste evt', evt
+      cpData = evt.originalEvent.clipboardData
+      console.log 'cpdata',cpData.items[0]
+      _(cpData.types).each (type, i) =>
+        console.log 'handle type:', type
+        if type.match && type.match(imageMatch) || cpData.items[i].type.match(imageMatch)
+          file = cpData.items[i].getAsFile()
+          reader = new FileReader()
+          reader.onload = (evt) =>
+            # should be an event on editor
+            opts =
+              url: evt.target.result
+              event: evt
+              file: file
+              name: file.name
+
+            @addImageElement opts
+
+          reader.readAsDataURL(file)
