@@ -11,24 +11,26 @@ define [
 
       $(document).on 'paste', @onPaste
 
-      $('#addNormal').click @addTextElement('normal')
-      $('#addHeading1').click @addTextElement('headline1')
-      $('#addHeading2').click @addTextElement('headline2')
+      $('#addNormal').click () =>
+        @addTextElement({format: 'normal'})
+      $('#addHeading1').click () =>
+        @addTextElement({format: 'headline1'})
+      $('#addHeading2').click () =>
+        @addTextElement({format: 'headline2'})
 
       $('#addImg').click @addImageElement
 
-    addTextElement: (mode='normal') ->
-      () =>
-        console.log 'add textnode'
-        n = new TextElement()
-        n.create(mode)
-        $(n).on 'select', (evt, element) =>
-          @ctxMenu = element.getCtxMenu()
-          $('#contextMenu').empty().append(@ctxMenu)
+    addTextElement: (options) ->
+      console.log 'add textnode'
+      n = new TextElement()
+      n.create(options)
+      $(n).on 'select', (evt, element) =>
+        @ctxMenu = element.getCtxMenu()
+        $('#contextMenu').empty().append(@ctxMenu)
 
-        $(n).on 'deselect', (evt, element) ->
-          $('#contextMenu').empty()
-        $('#slidePane').append(n.el)
+      $(n).on 'deselect', (evt, element) ->
+        $('#contextMenu').empty()
+      $('#slidePane').append(n.el)
 
     addImageElement: (options = {}) ->
       console.log 'add imagenode'
@@ -70,13 +72,17 @@ define [
 
     onPaste: (evt) =>
       imageMatch = /image.*/
+      textMatch = /text\/plain/
+      htmlMatch = /text\/html/
+      containsHtml = /<[a-z][\s\S]*>/i
+
 
       console.log 'paste evt', evt
       cpData = evt.originalEvent.clipboardData
-      console.log 'cpdata',cpData.items[0]
+      console.log 'cpdata',cpData.types
       _(cpData.types).each (type, i) =>
         console.log 'handle type:', type
-        if type.match && type.match(imageMatch) || cpData.items[i].type.match(imageMatch)
+        if type.match(imageMatch) || cpData.items[i].type.match(imageMatch)
           file = cpData.items[i].getAsFile()
           reader = new FileReader()
           reader.onload = (evt) =>
@@ -90,3 +96,30 @@ define [
             @addImageElement opts
 
           reader.readAsDataURL(file)
+        else if type.match(htmlMatch) || cpData.items[i].type.match(htmlMatch)
+          html = cpData.getData(type)
+          opts =
+            format: 'normal'
+            mode: 'html'
+            content: html
+
+          @addTextElement opts
+
+        else if type.match(textMatch) || cpData.items[i].type.match(textMatch)
+          # html is prefered
+          if 'text/html' in cpData.types
+            return
+          txt = cpData.getData(type)
+          if txt.match(containsHtml)
+            opts =
+              format: 'normal'
+              mode: 'html'
+              content: txt
+          else
+            opts =
+              format: 'normal'
+              mode: 'text'
+              content: txt
+
+          @addTextElement opts
+          console.log 'handling text', cpData.getData(type)

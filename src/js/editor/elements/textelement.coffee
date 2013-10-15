@@ -14,13 +14,17 @@ define [
       @initEvents()
 
 
-    create: (format = 'headline1') ->
-      switch format
+    create: (options) ->
+      switch options.format
         when 'headline1' then @el = $(h1_tpl())
         when 'headline2' then @el = $(h2_tpl())
         else @el = $(p_tpl())
 
       @txt = $(@el.find('.slideText').get(0))
+      if (options.mode == 'html' && options.content)
+        @txt.empty().html(options.content)
+      if (options.mode == 'text' && options.content)
+        @txt.empty().text(options.content)
       @el.append @txt
       @initEvents()
 
