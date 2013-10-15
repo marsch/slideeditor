@@ -1,0 +1,83 @@
+{
+  "name": "slideeditor",
+  "version": "0.0.1",
+  "dependencies": {
+
+    "jquery": "*",
+    "jquery-ui": "*",
+    "underscore": "1.4.x",
+    "requirejs": "2.1.x",
+    "mustache": "0.7.x",
+    "bootstrap": "2.3.x",
+    "requirehogan": "https://github.com/millermedeiros/requirejs-hogan-plugin.git",
+    "requirecs": "https://github.com/jrburke/require-cs.git",
+    "requirecss": "https://github.com/guybedford/require-css.git",
+    "requireless": "https://github.com/guybedford/require-less.git",
+    "loglevel": "https://github.com/pimterry/loglevel.git",
+    "keymaster": "https://github.com/madrobby/keymaster.git",
+    "uuid-js": "0.7.x",
+    "html2canvas": "http://html2canvas.hertzen.com/build/html2canvas.js",
+    "jquery-minicolors": "2.0.x"
+
+
+  },
+  "exportsOverride": {
+    "jquery": {
+      "js/vendor": "jquery.js"
+    },
+    "jquery-ui": {
+      "js/vendor": "ui/jquery-ui.js",
+      "css/vendor": "themes/smoothness/*.css",
+      "images/vendor": "themes/smoothness/images/*"
+    },
+    "coffee-script": {
+      "js/vendor": "*.js"
+    },
+    "requirejs": {
+      "js/vendor": "require.js"
+    },
+    "underscore": {
+      "js/vendor": "underscore.js"
+    },
+    "mustache": {
+      "js/vendor": "mustache.js"
+    },
+    "bootstrap": {
+      "css/vendor": "less/**/*.less",
+      "images/vendor": "img/glyphicons-*.png",
+      "js/vendor": "js/*.js"
+    },
+    "moment": {
+      "js/vendor": "moment.js"
+    },
+    "requirehogan": {
+      "js/vendor": "*.js"
+    },
+    "requirecs": {
+      "js/vendor": "*.js"
+    },
+    "requireless": {
+      "js/vendor": "*"
+    },
+    "requirecss": {
+      "js/vendor": "*"
+    },
+    "loglevel": {
+      "js/vendor": "lib/loglevel.js"
+    },
+    "keymaster": {
+      "js/vendor": "keymaster.min.js"
+    },
+    "uuid-js": {
+      "js/vendor": "lib/uuid.js"
+    },
+    "html2canvas": {
+      "js/vendor": "*.js"
+    },
+    "jquery-minicolors": {
+      "js/vendor": "*.js",
+      "css/vendor": "*.css",
+      "images/vendor": "*.png"
+    }
+   }
+}
