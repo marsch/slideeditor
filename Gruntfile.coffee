@@ -32,7 +32,7 @@ module.exports = (grunt) ->
       livereload:
         options:
           middleware: (connect) ->
-            [lrSnippet, mountFolder(connect, SRC_DIR + '/')]
+            [lrSnippet, mountFolder(connect, '')]
 
       production:
         options:
@@ -41,7 +41,7 @@ module.exports = (grunt) ->
 
     open:
       server:
-        path: 'http://localhost:<%= connect.options.port %>'
+        path: 'http://localhost:<%= connect.options.port %>/src'
 
     clean:
       bower: 'components'
