@@ -13,6 +13,7 @@ define [
   class Editor
     elements: []
     areaSelector: '#slidePane'
+    editing: false
     constructor:() ->
       @el = $(@areaSelector)
       key 'backspace', @onDeleteElement
@@ -39,10 +40,13 @@ define [
       @elements.push n
       n.create(options)
       $(n).on 'select', @onSelectElement
-
-
-
       $(n).on 'deselect', @onDeselectElement
+      $(n).on 'edit', @onEditElement
+      $(n).on 'moveUp', @onMoveUpElement
+      $(n).on 'moveDown', @onMoveDownElement
+
+      n.el.css('z-index', @elements.length + 1)
+
       $('#slidePane').append(n.el)
 
     addImageElement: (options = {}) =>
@@ -52,6 +56,11 @@ define [
       n.create(options)
       $(n).on 'select', @onSelectElement
       $(n).on 'deselect', @onDeselectElement
+      $(n).on 'moveUp', @onMoveUpElement
+      $(n).on 'moveDown', @onMoveDownElement
+
+      # set z-index default
+      n.el.css('z-index', @elements.length + 1)
       $('#slidePane').append(n.el)
 
 
@@ -68,7 +77,11 @@ define [
               otherElement.onDeselect()
 
     onDeselectElement: () =>
+      @editing = false
       $('#contextMenu').empty()
+
+    onEditElement: () =>
+      @editing = true
 
     getContent: () ->
       $(@areaSelector).html()
@@ -86,10 +99,14 @@ define [
       _(textElements).each (elem) =>
         n = new TextElement()
         @elements.push n
+        # set z-index default
+        n.el.css('z-index', @elements.length + 1)
         n.import $(elem)
 
       _(imageElements).each (elem) =>
         n = new ImageElement()
+        # set z-index default
+        n.el.css('z-index', @elements.length + 1)
         @elements.push n
         n.import $(elem)
 
@@ -148,6 +165,7 @@ define [
           console.log 'handling text', cpData.getData(type)
 
     onDeleteElement: () =>
+      return if @editing
       _(@elements).each (element, i) =>
         if element.selected
           element.dispose()
