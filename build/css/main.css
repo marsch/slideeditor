@@ -634,8 +634,8 @@ button.btn.btn-mini,input[type="submit"].btn.btn-mini{*padding-top:1px;*padding-
 .slideText:focus{background-color:#EEE}
 .slideImage{height:100%;width:100%}
 .slideElement{position:relative;width:50%}
-.slideElement.selected,.slideElement.selected:hover{outline:1px dashed #000}
-.slideElement:hover{outline:1px dashed #ccc;cursor:move}
+.slideElement.selected,.slideElement.selected:hover{outline:1px dashed #000;cursor:move}
+.slideElement:hover{outline:1px dashed #ccc;cursor:pointer}
 .ui-resizable-handle{width:5px;height:5px}
 .ui-resizable-n{top:-5px;left:50%}
 .ui-resizable-s{bottom:-5px;left:50%}

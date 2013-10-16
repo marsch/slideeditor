@@ -49,8 +49,9 @@ require.config({
         'redactor-fontsize': 'lib/redactor-fontsize',
 
         'html2canvas': 'vendor/html2canvas/index',
-        'jquery-minicolors': 'vendor/jquery-minicolors/jquery.minicolors'
+        'jquery-minicolors': 'vendor/jquery-minicolors/jquery.minicolors',
 
+        'thumbnailer': 'lib/thumbnailer'
 
     },
     shim: {
@@ -88,10 +89,14 @@ require.config({
             deps: ['jquery']
         },
         'html2canvas': {
-            deps: ['jquery']
+            deps: ['jquery'],
+            exports: 'html2canvas'
         },
         'jquery-minicolors': {
             deps: ['jquery']
+        },
+        'thumbnailer': {
+            exports: 'thumbnailer'
         }
     }
 });
@@ -99,10 +104,11 @@ require.config({
 require([
     'cs!editor/editor.coffee',
     'jquery',
+    'loglevel',
     'jquery-ui',
     'bootstrap.dropdown',
-    'bootstrap.modal',
-    'loglevel'
+    'bootstrap.modal'
+
     ], function (Editor, $, log) {
   'use strict';
 

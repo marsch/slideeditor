@@ -1,15 +1,20 @@
 define [
+  'jquery'
   'cs!editor/elements/textelement'
   'cs!editor/elements/imageelement'
   'underscore'
   'keymaster'
-], (TextElement, ImageElement, _, key) ->
+  'html2canvas'
+  'thumbnailer'
+  'loglevel'
+], ($, TextElement, ImageElement, _, key, html2canvas, thumbnailer, log) ->
   'use strict'
 
   class Editor
     elements: []
     areaSelector: '#slidePane'
     constructor:() ->
+      @el = $(@areaSelector)
       key 'backspace', @onDeleteElement
 
       $(document).on 'paste', @onPaste
@@ -23,7 +28,7 @@ define [
 
       $('#addImg').click @addImageElement
 
-      $(@areaSelector).click (evt) =>
+      $(@el).click (evt) =>
         _(@elements).each (element) ->
           return if element.selected == false
           element.onDeselect()
@@ -143,3 +148,30 @@ define [
 
       @elements = _(@elements).filter (element) ->
         return element.disposed == false
+
+
+    screenshot: () =>
+      df = new $.Deferred()
+      el = @el.get(0)
+      console.log 'element', el
+      html2canvas([el], {
+        allowTaint: true
+        useCORS: true
+        onrendered: (canvas) =>
+          console.log canvas
+          df.resolve canvas
+      })
+      df
+
+    thumbnail: () =>
+      df = new $.Deferred()
+      @screenshot()
+        .done (canvas) =>
+          img = new Image
+          img.width = canvas.width
+          img.height = canvas.height
+          img.onload = () ->
+            new thumbnailer canvas, img, 188, 8
+            df.resolve canvas
+
+      df
