@@ -1,4 +1,6 @@
-define [], () ->
+define [
+  'uuid-js'
+], (UUIDjs) ->
   'use strict'
 
 
@@ -6,6 +8,9 @@ define [], () ->
     el: null
     selected: false
     disposed: false
+    constructor: () ->
+      @cid = UUIDjs.create().toString()
+
     initEvents: () ->
       console.log 'init draggable'
       @el.click (evt) =>

@@ -27,6 +27,7 @@ require.config({
         backbone: 'vendor/backbone/backbone',
         loglevel: 'vendor/loglevel/loglevel',
         'keymaster': 'vendor/keymaster/keymaster.min',
+        'uuid-js': 'vendor/uuid-js/uuid',
 
         // jquery plugins
         'bootstrap.collapse': 'vendor/bootstrap/bootstrap-collapse',
@@ -97,6 +98,9 @@ require.config({
         },
         'thumbnailer': {
             exports: 'thumbnailer'
+        },
+        'uuid-js': {
+            exports: 'UUIDjs'
         }
     }
 });

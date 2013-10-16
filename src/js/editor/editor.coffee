@@ -38,12 +38,11 @@ define [
       n = new TextElement()
       @elements.push n
       n.create(options)
-      $(n).on 'select', (evt, element) =>
-        @ctxMenu = element.getCtxMenu()
-        $('#contextMenu').empty().append(@ctxMenu)
+      $(n).on 'select', @onSelectElement
 
-      $(n).on 'deselect', (evt, element) ->
-        $('#contextMenu').empty()
+
+
+      $(n).on 'deselect', @onDeselectElement
       $('#slidePane').append(n.el)
 
     addImageElement: (options = {}) =>
@@ -51,18 +50,25 @@ define [
       n = new ImageElement()
       @elements.push n
       n.create(options)
-      $(n).on 'select', (evt, element) =>
-        @ctxMenu = element.getCtxMenu()
-        $('#contextMenu').empty().append(@ctxMenu)
-
-      $(n).on 'deselect', (evt, element) ->
-        $('#contextMenu').empty()
+      $(n).on 'select', @onSelectElement
+      $(n).on 'deselect', @onDeselectElement
       $('#slidePane').append(n.el)
 
 
 
     addShapeElement: () ->
 
+    onSelectElement:  (evt, element)  =>
+      @ctxMenu = element.getCtxMenu()
+      $('#contextMenu').empty().append(@ctxMenu)
+      _(@elements).each (otherElement) =>
+          if element.cid != otherElement.cid
+            if otherElement.selected == true
+
+              otherElement.onDeselect()
+
+    onDeselectElement: () =>
+      $('#contextMenu').empty()
 
     getContent: () ->
       $(@areaSelector).html()
